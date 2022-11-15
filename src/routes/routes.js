@@ -19,7 +19,7 @@ const MyRoutes = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Dashboard />}>
-                    <Route index element={!oauth.user || oauth.user.email !== 'john@gmail.com' ? <Navigate to="/admin" /> : <Navigate to="/home" />} />
+                    <Route index element={!oauth.user || oauth.user.email !== 'john@gmail.com' ? <Navigate to="/home" /> : <Navigate to="/admin" /> } />
                     <Route path="/signin" element={
                         !oauth.user ? <Signin /> : oauth.user.email === 'john@gmail.com' ? <Navigate to="/admin" /> : <Navigate to="/home" />
                     } />

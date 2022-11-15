@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { endCheckout, previousStep } from "../../store/slices/checkoutSlice";
+import axios from "axios";
 
 import { clearCart } from "../../store/slices/shoppingCartSlice";
 
 import { SwalMessage } from "../../assets/swalmessage/SwalMessage";
+
+import { BASE_URL_ORDERS } from "../../assets/urls/urls";
 
 import {
     Box,
@@ -26,7 +29,6 @@ function cardFormat(value) {
 }
 
 const Review = ({ shoppingCart, checkout }) => {
-    console.log(shoppingCart);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -34,13 +36,41 @@ const Review = ({ shoppingCart, checkout }) => {
         dispatch(previousStep());
     };
 
-    const handleFinishPayment = () => {
-        dispatch(endCheckout());
-        console.log('end checkout');
-        console.log(checkout);
-        dispatch(clearCart());
-        SwalMessage("Payment completed", "Your payment has been completed successfully", "success", false, 3000);
-        navigate('/home');
+    const handleFinishPayment = async () => {
+        console.log(shoppingCart);
+        const order = {
+            //id: Math.floor(Math.random() * 1000000),
+            userId: checkout.user.id,
+            date: new Date().toLocaleString(),
+            products: [shoppingCart.shoppingCart.map((product) => {
+                return {
+                    id: product.id,
+                    quantity: product.quantity,
+                };
+            })],
+            // total: shoppingCart.total,
+            // holder: {
+            //     name: checkout.customerData.firstName,
+            //     email: checkout.customerData.email,
+            //     address: checkout.customerData.address,
+            //     city: checkout.customerData.city,
+            //     zip: checkout.customerData.zip,
+            //     country: checkout.customerData.country,
+            // }
+        };
+        console.log(order);
+        await axios.post(BASE_URL_ORDERS, order)
+        .then((res) => {
+            console.log(res);
+            SwalMessage("Success", "Order created", "success", false, 2000);
+            //SwalMessage('Success', 'Payment', 'Payment completed successfully', fasle, 2000);
+            dispatch(clearCart());
+            dispatch(endCheckout());
+            navigate('/home');
+        }).catch((err) => {
+            console.log(err);
+            SwalMessage('error', 'Payment', 'Payment failed');
+        });
     };
     return (
         <Box sx={{
