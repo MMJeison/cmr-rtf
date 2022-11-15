@@ -19,6 +19,7 @@ import {
     Tooltip,
     MenuItem,
     InputBase,
+    Button,
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
@@ -103,11 +104,12 @@ const Navbar = () => {
         setAnchorElUser(null);
     };
 
+    const navigate = useNavigate();
     const handleLogout = () => {
         setAnchorElUser(null);
         dispatch(logout());
+        navigate('/signin');
     };
-    const navigate = useNavigate();
     const handleEnterSearch = (event) => {
         if (event.key === 'Enter') {
             if(event.target.value === "") {
@@ -225,17 +227,8 @@ const Navbar = () => {
                             onClose={handleCloseUserMenu}
                         >
                             {oauth.user && 
-                                [<NavLink key='profile' to="/profile" onClick={handleCloseUserMenu} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                        <MenuItem sx={{
-                                            '&:hover': {
-                                                backgroundColor: 'primary.main',
-                                                color: 'white',
-                                            }
-                                        }}>
-                                            <Typography textAlign="center">Profile</Typography>
-                                        </MenuItem>
-                                    </NavLink>,
-                                    <Link key='logout' to={'/home'} onClick={handleLogout} style={{textDecoration: 'none', color: 'inherit'}}>
+                                [
+                                    <Button key='logout' onClick={handleLogout} style={{textDecoration: 'none', color: 'inherit'}}>
                                         <MenuItem sx={{
                                             '&:hover': {
                                                 backgroundColor: 'primary.main',
@@ -244,7 +237,7 @@ const Navbar = () => {
                                         }}>
                                             <Typography textAlign="center">Logout</Typography>
                                         </MenuItem>
-                                    </Link>]
+                                    </Button>]
                             }
                             {!oauth.user && (
                                 <Link to={'/signin'} onClick={handleCloseUserMenu} style={{textDecoration: 'none', color: 'inherit'}}>

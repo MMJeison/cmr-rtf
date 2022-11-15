@@ -8,6 +8,7 @@ import productsReducer from "./slices/productsSlice";
 import categoriesReducer from "./slices/categoriesSlice";
 import shoppingCartReducer from "./slices/shoppingCartSlice";
 import checkoutReducer from "./slices/checkoutSlice";
+import usersReducer from "./slices/usersSlice";
 
 const rootReducer = combineReducers({
     oauth: oauthReducer,
@@ -15,12 +16,14 @@ const rootReducer = combineReducers({
     categories: categoriesReducer,
     shoppingCart: shoppingCartReducer,
     checkout: checkoutReducer,
+    users: usersReducer,
 });
 
 const persistConfig = {
     key: "root",
     storage,
     whitelist: ["oauth", "shoppingCart", "checkout"],
+    blacklist: [],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

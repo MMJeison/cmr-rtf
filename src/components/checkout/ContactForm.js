@@ -29,7 +29,7 @@ const ContactForm = ({ checkout }) => {
         console.log(checkout.isValidCustomerData);
         console.log('end');
         for (let key in checkout.isValidCustomerData) {
-            if (checkout.isValidCustomerData[key] === -1 || checkout.isValidCustomerData[key] === 0) {
+            if (!checkout.isValidCustomerData[key]) {
                 valid = false;
                 if (keyStr === '') {
                     keyStr = key;
@@ -42,7 +42,7 @@ const ContactForm = ({ checkout }) => {
         } else {
             dispatch(setIsValidCustomerData({
                 type: keyStr,
-                value: 0,
+                value: false,
             }));
         }
     };
@@ -66,7 +66,7 @@ const ContactForm = ({ checkout }) => {
                     name="firstName"
                     label="First name"
                     value={checkout.customerData.firstName}
-                    {...(checkout.isValidCustomerData.firstName === 0 && {
+                    {...(checkout.isValidCustomerData.firstName === false && {
                         error: true,
                         helperText: "Please enter your first name",
                     })}
@@ -81,7 +81,7 @@ const ContactForm = ({ checkout }) => {
                     name="lastName"
                     label="Last name"
                     value={checkout.customerData.lastName}
-                    {...(checkout.isValidCustomerData.lastName === 0 && {
+                    {...(checkout.isValidCustomerData.lastName === false && {
                         error: true,
                         helperText: "Please enter your last name",
                     })}
@@ -96,7 +96,7 @@ const ContactForm = ({ checkout }) => {
                     name="email"
                     label="Email"
                     value={checkout.customerData.email}
-                    {...(checkout.isValidCustomerData.email === 0 && {
+                    {...(checkout.isValidCustomerData.email === false && {
                         error: true,
                         helperText: "Please enter a valid email address",
                     })}
@@ -111,7 +111,7 @@ const ContactForm = ({ checkout }) => {
                     name="address"
                     label="Address"
                     value={checkout.customerData.address}
-                    {...(checkout.isValidCustomerData.address === 0 && {
+                    {...(checkout.isValidCustomerData.address === false && {
                         error: true,
                         helperText: "Please enter your address",
                     })}
@@ -126,7 +126,7 @@ const ContactForm = ({ checkout }) => {
                     name="city"
                     label="City"
                     value={checkout.customerData.city}
-                    {...(checkout.isValidCustomerData.city === 0 && {
+                    {...(checkout.isValidCustomerData.city === false && {
                         error: true,
                         helperText: "Please enter your city",
                     })}
@@ -141,7 +141,7 @@ const ContactForm = ({ checkout }) => {
                     name="state"
                     label="State/Province/Region"
                     value={checkout.customerData.state}
-                    {...(checkout.isValidCustomerData.state === 0 && {
+                    {...(checkout.isValidCustomerData.state === false && {
                         error: true,
                         helperText: "Please enter your state",
                     })}
@@ -157,7 +157,7 @@ const ContactForm = ({ checkout }) => {
                     label="Zip / Postal code"
                     value={checkout.customerData.zip}
                     placeholder={"000000"}
-                    {...(checkout.isValidCustomerData.zip === 0 && {
+                    {...(checkout.isValidCustomerData.zip === false && {
                         error: true,
                         helperText: "Please enter your zip code",
                     })}
@@ -172,7 +172,7 @@ const ContactForm = ({ checkout }) => {
                     name="country"
                     label="Country"
                     value={checkout.customerData.country}
-                    {...(checkout.isValidCustomerData.country === 0 && {
+                    {...(checkout.isValidCustomerData.country === false && {
                         error: true,
                         helperText: "Please enter your country",
                     })}

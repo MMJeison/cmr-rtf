@@ -1,12 +1,11 @@
 import React from "react";
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    ContactMail,
-    Payment,
-} from '@mui/icons-material/';
 
+import ContactMail from '@mui/icons-material/ContactMail';
+import Payment from '@mui/icons-material/Payment';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import SellIcon from '@mui/icons-material/Sell';
 
 const style = makeStyles(theme => ({
     root: {
@@ -37,6 +36,7 @@ const StepperIcons = props => {
         1: <ShoppingBagIcon />,
         2: <ContactMail />,
         3: <Payment />,
+        4: <SellIcon />,
     };
 
     return (

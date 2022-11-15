@@ -1,10 +1,7 @@
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { previousStep } from "../../store/slices/checkoutSlice";
-import { setPaymentData, endCheckout, setIsValidPaymentData } from "../../store/slices/checkoutSlice";
-import { clearCart } from "../../store/slices/shoppingCartSlice";
+import { setPaymentData, setIsValidPaymentData, nextStep } from "../../store/slices/checkoutSlice";
 
-import { SwalMessage } from "../../assets/swalmessage/SwalMessage";
 
 import {
     Button,
@@ -43,25 +40,23 @@ function cardFormat(value) {
 }
 
 
-const PaymentForm = () => {
+const PaymentForm = ( { checkout } ) => {
     const dispatch = useDispatch();
-
-    const navigate = useNavigate();
-
-    const checkout = useSelector(state => state.checkout);
 
     const handlePreviousStep = (e) => {
         e.preventDefault();
         dispatch(previousStep());
     };
 
-
-    const handleFinishPayment = (e) => {
+    const handleNextStep = (e) => {
         e.preventDefault();
         let valid = true;
         let keyStr = '';
+        console.log('start');
+        console.log(checkout.isValidPaymentData);
+        console.log('end');
         for (let key in checkout.isValidPaymentData) {
-            if (checkout.isValidPaymentData[key] === -1 || checkout.isValidPaymentData[key] === 0) {
+            if (!checkout.isValidPaymentData[key]) {
                 valid = false;
                 if (keyStr === '') {
                     keyStr = key;
@@ -69,15 +64,12 @@ const PaymentForm = () => {
                 break;
             }
         }
-        if (valid) {
-            dispatch(endCheckout());
-            dispatch(clearCart());
-            SwalMessage("Payment completed", "Your payment has been completed successfully", "success", false, 3000);
-            navigate('/home');
-        } else {
+        if(valid){
+            dispatch(nextStep());
+        }else{
             dispatch(setIsValidPaymentData({
                 type: keyStr,
-                value: false
+                value: false,
             }));
         }
     };
@@ -113,7 +105,7 @@ const PaymentForm = () => {
                     name="nameOnCard"
                     label="Name on card"
                     value={checkout.paymentData.nameOnCard}
-                    {...(checkout.isValidPaymentData.nameOnCard === 0 && {
+                    {...(checkout.isValidPaymentData.nameOnCard === false && {
                         error: true,
                         helperText: "Name on card is required",
                     })}
@@ -131,7 +123,7 @@ const PaymentForm = () => {
                     name="cardNumber"
                     label="Card number"
                     placeholder="1234 1234 1234 1234"
-                    {...(checkout.isValidPaymentData.cardNumber === 0 && {
+                    {...(checkout.isValidPaymentData.cardNumber === false && {
                         error: true,
                         helperText: checkout.paymentData.cardNumber.length === 0 ? "Card number is required" : "Card number is invalid",
                     })}
@@ -153,7 +145,7 @@ const PaymentForm = () => {
                     type="date"
                     value={checkout.paymentData.cardExp}
                     InputLabelProps={{ shrink: true }}
-                    {...(checkout.isValidPaymentData.cardExp === 0 && {
+                    {...(checkout.isValidPaymentData.cardExp === false && {
                         error: true,
                         helperText: checkout.paymentData.cardExp.length === 0 ? "Expiry date is required" : "Expiry date is invalid",
                     })}
@@ -172,7 +164,7 @@ const PaymentForm = () => {
                     label="CVV"
                     placeholder="000"
                     value={checkout.paymentData.cardCvv}
-                    {...(checkout.isValidPaymentData.cardCvv === 0 && {
+                    {...(checkout.isValidPaymentData.cardCvv === false && {
                         error: true,
                         helperText: checkout.paymentData.cardCvv.length === 0 ? "CVV is required" : "CVV is invalid",
                     })}
@@ -194,8 +186,8 @@ const PaymentForm = () => {
                     <Button variant="contained" type="submit" onClick={handlePreviousStep}>
                         Back
                     </Button>
-                    <Button variant="contained" type="submit" onClick={handleFinishPayment} >
-                        Finish Payment
+                    <Button variant="contained" type="submit" onClick={handleNextStep} >
+                        Next
                     </Button>
                 </Box>
             </Grid>

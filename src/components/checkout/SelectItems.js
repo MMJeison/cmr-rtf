@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 
-import { nextStep } from "../../store/slices/checkoutSlice";
+import { setProducts, nextStep } from "../../store/slices/checkoutSlice";
 
 import {
     Grid,
@@ -19,6 +19,7 @@ import { NavLink } from "react-router-dom";
 const SelectItems = ({ shoppingCart }) => {
     const dispatch = useDispatch();
     const handleNext = () => {
+        dispatch(setProducts({products: shoppingCart.shoppingCart}));
         dispatch(nextStep());
     };
     return (

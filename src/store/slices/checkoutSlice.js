@@ -4,202 +4,157 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
+const initialState = {
+    isInProgress: false,
+    user: null,
+    step: 0,
+    products: [],
+    customerData: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        address: "",
+        city: "",
+        state: "",
+        zip: "",
+        country: "",
+    },
+    isValidCustomerData: {
+        firstName: undefined,
+        lastName: undefined,
+        email: undefined,
+        address: undefined,
+        city: undefined,
+        state: undefined,
+        zip: undefined,
+        country: undefined,
+    },
+    paymentData: {
+        nameOnCard: "",
+        cardNumber: "",
+        cardExp: "",
+        cardCvv: "",
+    },
+    isValidPaymentData: {
+        nameOnCard: undefined,
+        cardNumber: undefined,
+        cardExp: undefined,
+        cardCvv: undefined,
+    },
+};
+
+
 const checkoutSlice = createSlice({
     name: "checkout",
-    initialState: {
-        isInProgress: false,
-        user: null,
-        step: 0,
-        customerData: {
-            firstName: "",
-            lastName: "",
-            email: "",
-            address: "",
-            city: "",
-            state: "",
-            zip: "",
-            country: "",
-        },
-        isValidCustomerData: {
-            firstName: -1,
-            lastName: -1,
-            email: -1,
-            address: -1,
-            city: -1,
-            state: -1,
-            zip: -1,
-            country: -1,
-        },
-        paymentData: {
-            nameOnCard: "",
-            cardNumber: "",
-            cardExp: "",
-            cardCvv: "",
-        },
-        isValidPaymentData: {
-            nameOnCard: -1,
-            cardNumber: -1,
-            cardExp: -1,
-            cardCvv: -1,
-        },
-    },
+    initialState,
     reducers: {
         startCheckout: (state, action) => {
-            if(state.isInProgress) {
-                if(state.user?.id !== action.payload.user.id) {
-                    state.user = null;
-                    state.step = 0;
-                    state.customerData = {
-                        firstName: "",
-                        lastName: "",
-                        email: "",
-                        address: "",
-                        city: "",
-                        state: "",
-                        zip: "",
-                        country: "",
-                    };
-                    state.isValidCustomerData = {
-                        firstName: -1,
-                        lastName: -1,
-                        email: -1,
-                        address: -1,
-                        city: -1,
-                        state: -1,
-                        zip: -1,
-                        country: -1,
-                    };
-                    state.paymentData = {
-                        nameOnCard: "",
-                        cardNumber: "",
-                        cardExp: "",
-                        cardCvv: "",
-                    };
-                    state.isValidPaymentData = {
-                        nameOnCard: -1,
-                        cardNumber: -1,
-                        cardExp: -1,
-                        cardCvv: -1,
-                    };
+            console.log(state.isInProgress);
+            if (state.isInProgress) {
+                console.log("Checkout already in progress");
+                if (state.user?.id !== action.payload.user.id) {
+                    console.log("The user has changed, resetting the checkout");
+                    console.log(initialState);
+                    state = initialState;
                 }
+            } else {
+                console.log("Starting checkout");
+                state.user = action.payload.user;
+                state.isInProgress = true;
             }
-            state.user = action.payload.user;
-            state.isInProgress = true;
         },
         endCheckout: (state) => {
+            console.log("Ending checkout");
+            console.log(initialState);
             state.isInProgress = false;
             state.user = null;
             state.step = 0;
-            state.customerData = {
-                firstName: "",
-                lastName: "",
-                email: "",
-                address: "",
-                city: "",
-                state: "",
-                zip: "",
-                country: "",
-            };
-            state.isValidCustomerData = {
-                firstName: -1,
-                lastName: -1,
-                email: -1,
-                address: -1,
-                city: -1,
-                state: -1,
-                zip: -1,
-                country: -1,
-            };
-            state.paymentData = {
-                nameOnCard: "",
-                cardNumber: "",
-                cardExp: "",
-                cardCvv: "",
-            };
-            state.isValidPaymentData = {
-                nameOnCard: -1,
-                cardNumber: -1,
-                cardExp: -1,
-                cardCvv: -1,
-            };
+            state.products = [];
+            state.customerData = initialState.customerData;
+            state.isValidCustomerData = initialState.isValidCustomerData;
+            state.paymentData = initialState.paymentData;
+            state.isValidPaymentData = initialState.isValidPaymentData;
+        },
+        setProducts: (state, action) => {
+            state.products = action.payload.products;
         },
         setCustomerData: (state, action) => {
-            if(action.payload.type){
-                switch(action.payload.type){
+            if (action.payload.type) {
+                switch (action.payload.type) {
                     case "firstName":
                         state.customerData.firstName = action.payload.value;
-                        if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.firstName = 1;
-                        }else{
-                            state.isValidCustomerData.firstName = -1;
+                        if (action.payload.value.trim().length > 0) {
+                            state.isValidCustomerData.firstName = true;
+                        } else {
+                            state.isValidCustomerData.firstName = undefined;
                         }
                         break;
                     case "lastName":
                         state.customerData.lastName = action.payload.value;
-                        if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.lastName = 1;
-                        }else{
-                            state.isValidCustomerData.lastName = -1;
+                        if (action.payload.value.trim().length > 0) {
+                            state.isValidCustomerData.lastName = true;
+                        } else {
+                            state.isValidCustomerData.lastName = undefined;
                         }
                         break;
                     case "email":
                         state.customerData.email = action.payload.value;
-                        if(regex.test(action.payload.value)){
-                            state.isValidCustomerData.email = 1;
-                        }else{
-                            state.isValidCustomerData.email = -1;
+                        if (regex.test(action.payload.value)) {
+                            state.isValidCustomerData.email = true;
+                        } else {
+                            state.isValidCustomerData.email = undefined;
                         }
                         break;
                     case "address":
                         state.customerData.address = action.payload.value;
-                        if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.address = 1;
-                        }else{
-                            state.isValidCustomerData.address = -1;
+                        if (action.payload.value.trim().length > 0) {
+                            state.isValidCustomerData.address = true;
+                        } else {
+                            state.isValidCustomerData.address = undefined;
                         }
                         break;
                     case "city":
                         state.customerData.city = action.payload.value;
-                        if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.city = 1;
-                        }else{
-                            state.isValidCustomerData.city = -1;
+                        if (action.payload.value.trim().length > 0) {
+                            state.isValidCustomerData.city = true;
+                        } else {
+                            state.isValidCustomerData.city = undefined;
                         }
                         break;
                     case "state":
                         state.customerData.state = action.payload.value;
-                        if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.state = 1;
-                        }else{
-                            state.isValidCustomerData.state = -1;
+                        if (action.payload.value.trim().length > 0) {
+                            state.isValidCustomerData.state = true;
+                        } else {
+                            state.isValidCustomerData.state = undefined;
                         }
                         break;
                     case "zip":
                         state.customerData.zip = action.payload.value;
-                        if(state.customerData.zip.length > 3){
-                            state.isValidCustomerData.zip = 1;
-                        }else{
-                            state.isValidCustomerData.zip = -1;
+                        if (state.customerData.zip.length > 3) {
+                            state.isValidCustomerData.zip = true;
+                        } else {
+                            state.isValidCustomerData.zip = undefined;
                         }
                         break;
                     case "country":
                         state.customerData.country = action.payload.value;
-                        if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.country = 1;
-                        }else{
-                            state.isValidCustomerData.country = -1;
+                        if (action.payload.value.trim().length > 0) {
+                            state.isValidCustomerData.country = true;
+                        } else {
+                            state.isValidCustomerData.country = undefined;
                         }
                         break;
                     default:
                         break;
                 }
-            }else{
+            } else {
                 state.customerData = action.payload.customerData;
             }
         },
         setIsValidCustomerData: (state, action) => {
-            if(action.payload.type){
-                switch(action.payload.type){
+            if (action.payload.type) {
+                switch (action.payload.type) {
                     case "firstName":
                         state.isValidCustomerData.firstName = action.payload.value;
                         break;
@@ -227,68 +182,68 @@ const checkoutSlice = createSlice({
                     default:
                         break;
                 }
-            }else{
+            } else {
                 state.isValidCustomerData = action.payload.isValidCustomerData;
             }
         },
         setPaymentData: (state, action) => {
-            if(action.payload.type){
-                switch(action.payload.type){
+            if (action.payload.type) {
+                switch (action.payload.type) {
                     case "nameOnCard":
-                        if(state.paymentData.nameOnCard.length === 0 &&
-                            action.payload.value.trim().length === 0){
-                            state.isValidPaymentData.nameOnCard = -1;
+                        if (state.paymentData.nameOnCard.length === 0 &&
+                            action.payload.value.trim().length === 0) {
+                            state.isValidPaymentData.nameOnCard = undefined;
                             break;
                         }
                         state.paymentData.nameOnCard = action.payload.value;
-                        if(action.payload.value.length === 0){
-                            state.isValidPaymentData.nameOnCard = -1;
-                        }else{
-                            state.isValidPaymentData.nameOnCard = 1;
+                        if (action.payload.value.length === 0) {
+                            state.isValidPaymentData.nameOnCard = undefined;
+                        } else {
+                            state.isValidPaymentData.nameOnCard = true;
                         }
                         break;
                     case "cardNumber":
-                        if(state.paymentData.cardNumber.length === 16
-                            && action.payload.value.length === 17){
+                        if (state.paymentData.cardNumber.length === 16
+                            && action.payload.value.length === 17) {
                             break;
                         }
                         state.paymentData.cardNumber = action.payload.value;
-                        if(action.payload.value.length === 16){
-                            state.isValidPaymentData.cardNumber = 1;
-                        }else{
-                            state.isValidPaymentData.cardNumber = -1;
+                        if (action.payload.value.length === 16) {
+                            state.isValidPaymentData.cardNumber = true;
+                        } else {
+                            state.isValidPaymentData.cardNumber = undefined;
                         }
                         break;
                     case "cardExp":
                         state.paymentData.cardExp = action.payload.value;
-                        if(action.payload.value.length > 0){ 
-                            state.isValidPaymentData.cardExp = 1;
-                        }else{
-                            state.isValidPaymentData.cardExp = -1;
+                        if (action.payload.value.length > 0) {
+                            state.isValidPaymentData.cardExp = true;
+                        } else {
+                            state.isValidPaymentData.cardExp = undefined;
                         }
                         break;
                     case "cardCvv":
-                        if(state.paymentData.cardCvv.length === 3
-                            && action.payload.value.length === 4){
+                        if (state.paymentData.cardCvv.length === 3
+                            && action.payload.value.length === 4) {
                             break;
                         }
                         state.paymentData.cardCvv = action.payload.value;
-                        if(action.payload.value.length === 3){
-                            state.isValidPaymentData.cardCvv = 1;
-                        }else{
-                            state.isValidPaymentData.cardCvv = -1;
+                        if (action.payload.value.length === 3) {
+                            state.isValidPaymentData.cardCvv = true;
+                        } else {
+                            state.isValidPaymentData.cardCvv = undefined;
                         }
                         break;
                     default:
                         break;
                 }
-            }else{
+            } else {
                 state.paymentData = action.payload.paymentData;
             }
         },
         setIsValidPaymentData: (state, action) => {
-            if(action.payload.type){
-                switch(action.payload.type){
+            if (action.payload.type) {
+                switch (action.payload.type) {
                     case "nameOnCard":
                         state.isValidPaymentData.nameOnCard = action.payload.value;
                         break;
@@ -304,7 +259,7 @@ const checkoutSlice = createSlice({
                     default:
                         break;
                 }
-            }else{
+            } else {
                 state.isValidPaymentData = action.payload.isValidPaymentData;
             }
         },
@@ -315,7 +270,7 @@ const checkoutSlice = createSlice({
             state.step++;
         },
         previousStep: (state) => {
-            if(state.step > 0) {
+            if (state.step > 0) {
                 state.step--;
             }
         },
@@ -325,6 +280,7 @@ const checkoutSlice = createSlice({
 export const {
     startCheckout,
     endCheckout,
+    setProducts,
     setCustomerData,
     setIsValidCustomerData,
     setPaymentData,

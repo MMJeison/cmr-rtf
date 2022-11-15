@@ -8,24 +8,34 @@ import Home from '../components/home/Home';
 import Category from '../components/category/Category';
 import ListProduct from '../components/list/ListProduct';
 import Checkout from '../components/checkout/Checkout';
+
+import Admin from '../components/admin/Admin';
+import Products from '../components/admin/Products';
+import Users from '../components/admin/Users';
+
 const MyRoutes = () => {
     const oauth = useSelector(state => state.oauth);
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<Dashboard />}>
-                    <Route index element={<Navigate to="/home" />} />
+                    <Route index element={!oauth.user || oauth.user.email !== 'john@gmail.com' ? <Navigate to="/admin" /> : <Navigate to="/home" />} />
                     <Route path="/signin" element={
-                        !oauth.user ? <Signin /> : <Navigate to="/home" />
+                        !oauth.user ? <Signin /> : oauth.user.email === 'john@gmail.com' ? <Navigate to="/admin" /> : <Navigate to="/home" />
                     } />
                     <Route path="/signup" element={
-                        !oauth.user ? <Signup /> : <Navigate to="/home" />
+                        !oauth.user ? <Signup /> : oauth.user.email === 'john@gmail.com' ? <Navigate to="/admin" /> : <Navigate to="/home" />
                     } />
-                    <Route path="/home" element={<Home />} />
+                    <Route path="/home" element={!oauth.user || oauth.user.email !== 'john@gmail.com' ? <Home /> : <Navigate to="/admin" /> } />
                     <Route path="/category/:category" element={<Category />} />
                     <Route path="/search/:search" element={<ListProduct />} />
                 </Route>
                 <Route path='/checkout' element={ !oauth.user ? <Navigate to="/signin" /> : <Checkout />}/>
+                <Route path='/admin/' element={!oauth.user ? <Navigate to="/signin" /> : <Admin />}>
+                    <Route index element={<Navigate to="/admin/products" />} />
+                    <Route path="products" element={<Products />} />
+                    <Route path="users" element={<Users />} />
+                </Route>
             </Routes>
         </BrowserRouter>
     )

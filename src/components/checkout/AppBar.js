@@ -3,10 +3,10 @@ import {
     Toolbar,
     Typography,
     Grid,
+    Box,
 } from "@mui/material";
 
 import AdbIcon from '@mui/icons-material/Adb';
-import { Box } from "@mui/system";
 
 const CheckoutAppBar = ({title}) => {
     return (
