@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/slices/oauthSlice';
-import { Link, NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useNavigate, Link, NavLink } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
+import { fetchCategories } from '../../store/slices/categoriesSlice';
+
+import { BASE_URL_AVATARS } from '../../assets/urls/urls';
 
 import {
     AppBar,
@@ -14,19 +16,17 @@ import {
     Menu,
     Container,
     Avatar,
-    Button,
     Tooltip,
     MenuItem,
     InputBase,
-    Badge
 } from '@mui/material';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AdbIcon from '@mui/icons-material/Adb';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ShoppingCart from '../shopping/ShoopingCart';
 
-const pages = ['Products', 'Pricing', 'Blog'];
+// const pages = ['Products', 'Pricing', 'Blog'];
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -63,7 +63,7 @@ const Search = styled('div')(({ theme }) => ({
       transition: theme.transitions.create('width'),
       width: '100%',
       [theme.breakpoints.up('md')]: {
-        width: '30ch',
+        width: '20ch',
       },
     },
   }));
@@ -71,12 +71,21 @@ const Search = styled('div')(({ theme }) => ({
 const Navbar = () => {
     const [anchorElNav, setAnchorElNav] = useState(null);
     const [anchorElUser, setAnchorElUser] = useState(null);
-    const [anchorElCart, setAnchorElCart] = useState(null);
     
     const oauth = useSelector(state => state.oauth);
-    const shoppingCart = useSelector(state => state.shoppingCart);
-
     const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchCategories());
+    }, []);
+
+    const categories = useSelector(state => state.categories);
+    let pages = categories.categories.map(category => {
+        return {
+            name: category,
+            link: `/category/${category}`
+        }
+    });
+    pages.splice(0,0, {name: 'Home', link: '/home'});
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -94,41 +103,27 @@ const Navbar = () => {
         setAnchorElUser(null);
     };
 
-    const handleOpenCartMenu = (event) => {
-        setAnchorElCart(event.currentTarget);
-    };
-
-    const handleCloseCartMenu = () => {
-        setAnchorElCart(null);
-    };
-
     const handleLogout = () => {
         setAnchorElUser(null);
         dispatch(logout());
     };
+    const navigate = useNavigate();
+    const handleEnterSearch = (event) => {
+        if (event.key === 'Enter') {
+            if(event.target.value === "") {
+                navigate('/home');
+            }else if (event.target.value) {
+                navigate(`/search/${event.target.value}`);
+            }
+        }
+    };
 
     return (
-        <AppBar position="static" sx={{height: '70px'}}>
+        <AppBar position="static" sx={{height: '90px'}}>
             <Container maxWidth="xl" sx={{ minWidth: 300 }}>
                 <Toolbar sx={{ display: { xs: 'flex'}}} >
-                    <AdbIcon sx={{ display: { xs: 'none', sm: 'flex' }, mr: 1 }} />
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography>
-
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', sm: 'none' }, justifyContent: 'space-between', alignItems: 'center' }}>
+                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'space-between', alignItems: 'center' }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -154,27 +149,43 @@ const Navbar = () => {
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
                             sx={{
-                                display: { xs: 'block', sm: 'none' },
+                                display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
+                            {pages?.map((page) => (
+                                <NavLink to={page.link} key={page.name} style={({ isActive }) => {
+                                    return {
+                                        textDecoration: 'none',
+                                        color: isActive ? 'blue' : 'inherit',
+                                    }
+                                }}>
+                                    <MenuItem onClick={handleCloseNavMenu} sx={{
+                                        '&:hover': {
+                                            backgroundColor: 'primary.main',
+                                            color: 'white',
+                                        }
+                                    }}>
+                                        <Typography textAlign="center">{page.name.replace('+', ' ').toUpperCase()}</Typography>
+                                    </MenuItem>
+                                </NavLink>
                             ))}
                         </Menu>
-                        <AdbIcon sx={{ display: { xs: 'flex', sm: 'none' }, mr: 1 }} />
-                        <AdbIcon sx={{ display: { xs: 'flex', sm: 'none' }, mr: 1, color: 'rgba(255,255,255,0)' }} />
+                        <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                        <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1, color: 'rgba(255,255,255,0)' }} />
                     </Box>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', sm: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+                        {pages?.map((page) => (
+                            <NavLink to={page.link} key={page.name} style={({ isActive }) => {
+                                return {
+                                    fontWeight: 'bold',
+                                    color: isActive ? 'black' : 'inherit',
+                                    textDecoration: 'none',
+                                    margin: '10px 7px',
+                                    display: 'block',
+                                }
+                            }}>
+                                {page.name.replace('+', ' ').toUpperCase()}
+                            </NavLink>
                         ))}
                     </Box>
                     <Box sx={{ display: { xs: 'flex'} }}>
@@ -185,54 +196,16 @@ const Navbar = () => {
                             <StyledInputBase
                             placeholder="Search…"
                             inputProps={{ 'aria-label': 'search' }}
+                            onKeyUp={handleEnterSearch}
                             />
                         </Search>
                     </Box>
-                    <Box sx={{pr: '1vw'}}>
-                        <Tooltip title="Shopping Cart">
-                            <IconButton onClick={handleOpenCartMenu} size="large" aria-label={`show ${shoppingCart.totalItems} products`} color="inherit">
-                                <Badge badgeContent={shoppingCart.totalItems} color="error">
-                                    <ShoppingCartIcon />
-                                </Badge>
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElCart}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElCart)}
-                            onClose={handleCloseCartMenu}
-                            sx={{
-                                mt: '45px',
-                                mr: 5,
-                                minHeight: '200px',
-                                height: '50vh'
-                            }}
-                        >
-                            {shoppingCart.shoppingCart.length > 0 && shoppingCart.shoppingCart.map((item) => (
-                                <MenuItem key={item} onClick={handleCloseCartMenu}>
-                                    <Typography textAlign="center">{item}</Typography>
-                                </MenuItem>
-                            ))}
-                            {shoppingCart.shoppingCart.length === 0 && (
-                                <MenuItem onClick={handleCloseCartMenu}>
-                                    <Typography textAlign="center">Your cart is empty</Typography>
-                                </MenuItem>
-                            )}
-                        </Menu>
-                    </Box>
+                    <ShoppingCart />
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar alt={oauth.user ? oauth.user.username: ""}
+                                src={oauth.user ? `${BASE_URL_AVATARS}/${oauth.user.name.firstname}` : ""}/>
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -253,19 +226,34 @@ const Navbar = () => {
                         >
                             {oauth.user && 
                                 [<NavLink key='profile' to="/profile" onClick={handleCloseUserMenu} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                        <MenuItem>
+                                        <MenuItem sx={{
+                                            '&:hover': {
+                                                backgroundColor: 'primary.main',
+                                                color: 'white',
+                                            }
+                                        }}>
                                             <Typography textAlign="center">Profile</Typography>
                                         </MenuItem>
                                     </NavLink>,
                                     <Link key='logout' to={'/home'} onClick={handleLogout} style={{textDecoration: 'none', color: 'inherit'}}>
-                                        <MenuItem>
+                                        <MenuItem sx={{
+                                            '&:hover': {
+                                                backgroundColor: 'primary.main',
+                                                color: 'white',
+                                            }
+                                        }}>
                                             <Typography textAlign="center">Logout</Typography>
                                         </MenuItem>
                                     </Link>]
                             }
                             {!oauth.user && (
                                 <Link to={'/signin'} onClick={handleCloseUserMenu} style={{textDecoration: 'none', color: 'inherit'}}>
-                                    <MenuItem>
+                                    <MenuItem sx={{
+                                        '&:hover': {
+                                            backgroundColor: 'primary.main',
+                                            color: 'white',
+                                        }
+                                    }}>
                                         <Typography textAlign="center">Login</Typography>
                                     </MenuItem>
                                 </Link>

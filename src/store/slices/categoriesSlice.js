@@ -8,8 +8,16 @@ import { BASE_URL_CATEGORIES } from "../../assets/urls/urls";
 export const fetchCategories = createAsyncThunk(
     "categories/fetchCategories",
     async () => {
-        return await axios.get(BASE_URL_CATEGORIES).then((response) => {
-            return response.data;
+        return await axios.get(BASE_URL_CATEGORIES, {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
+        }).then((response) => {
+            const categories = [];
+            response.data.forEach((category) => {
+                categories.push(category.trim().replace(/\s+/g, "+"));
+            });
+            return categories;
         }).catch((error) => {
             return error;
         });

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchSignin } from '../../store/slices/oauthSlice';
 
 import {
+    Box,
     Grid,
     Paper,
     Avatar,
@@ -98,16 +99,17 @@ const Login = () => {
     }, [email, password]);
 
     return (
-        <Grid>
-            <Paper elevation={10} style={{
-                padding: 10, 
-                width: '25vw', 
-                minWidth: 270, 
-                height: '65vh',
-                minHeight: 450,
-                margin: '13vh auto',
+        <Box sx={{
+            width: {xs: "85%", sm: "60%", md: "45%", lg: "35%"},
+            height: '500px',
+            margin: "auto",
+        }}>
+            <Paper elevation={10} sx={{
+                padding: '10px',
+                width: '100%',
+                height: '100%',
                 }}>
-                <Grid align="center">
+                <Grid align="center" sx={{marginBottom: '20px'}}>
                     <Avatar sx={{ m: 3, bgcolor: '#1bbd7e' }}>
                         <LockOutlinedIcon />
                     </Avatar>
@@ -175,7 +177,7 @@ const Login = () => {
                     </div>
                 </Grid>
             </Paper>
-        </Grid>
+        </Box>
     )
 }
 

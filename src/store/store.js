@@ -7,18 +7,20 @@ import oauthReducer from "./slices/oauthSlice";
 import productsReducer from "./slices/productsSlice";
 import categoriesReducer from "./slices/categoriesSlice";
 import shoppingCartReducer from "./slices/shoppingCartSlice";
+import checkoutReducer from "./slices/checkoutSlice";
 
 const rootReducer = combineReducers({
     oauth: oauthReducer,
     products: productsReducer,
     categories: categoriesReducer,
     shoppingCart: shoppingCartReducer,
+    checkout: checkoutReducer,
 });
 
 const persistConfig = {
     key: "root",
     storage,
-    whitelist: ["oauth", "shoppingCart"],
+    whitelist: ["oauth", "shoppingCart", "checkout"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

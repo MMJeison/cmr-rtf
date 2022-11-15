@@ -26,8 +26,6 @@ const Section = (props) => {
     if (k < n) {
         l = n - k;
     }
-    console.log(n);
-    console.log(len);
 
     const handleNext = () => {
         if (fisrtProduct + 1 < len) {
@@ -47,20 +45,23 @@ const Section = (props) => {
 
     return (
         <Box sx={{
-            margin: 'auto',
+            margin: '40px auto',
+            padding: '0 10px',
             width: { xs: '99%', sm: '95%', md: '90%', lg: '85%' },
         }}>
             <Grid sx={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
+                padding: '10px 0',
             }}>
-                <Typography variant="h4">{props.title}</Typography>
+                <Typography variant="h3">{props.title}</Typography>
             </Grid>
             <Grid container spacing={2}>
                 <Grid item key={1} xs={2} sm={1} md={1} lg={1}>
                     <Button onClick={handlePrev} disabled={m===1} sx={{
-                        height: '100%',
+                        height: '90%',
+                        backgroundColor: 'rgba(255, 255, 255, 0.4)',
                     }}>
                         <ArrowBackIosIcon />
                     </Button>
@@ -71,12 +72,12 @@ const Section = (props) => {
                             <Grid item key={-1} xs={0} sm={0} md={n - len === 1 ? 2: 4} lg={n - len === 1 ? 2: 4}>
                             </Grid>
                         )}
-                        {props.products.slice(fisrtProduct, fisrtProduct + (len < n  ? len: n)).map((product) => (
+                        {props.products?.slice(fisrtProduct, fisrtProduct + (len < n  ? len: n)).map((product) => (
                             <Grid item key={product.id} xs={12} sm={6} md={4} lg={4}>
                                 <ProductSection product={product} />
                             </Grid>
                         ))}
-                        {len > n && props.products.slice(0, l).map((product) => (
+                        {len > n && props.products?.slice(0, l).map((product) => (
                             <Grid item key={product.id} xs={12} sm={6} md={4} lg={4}>
                                 <ProductSection product={product} />
                             </Grid>
@@ -85,7 +86,9 @@ const Section = (props) => {
                 </Grid>
                 <Grid item key={3} xs={2} sm={1} md={1} lg={1}>
                     <Button onClick={handleNext} disabled={m===1} sx={{
-                        height: '100%',
+                        height: '90%',
+                        margin: 'auto',
+                        backgroundColor: 'rgba(255, 255, 255, 0.4)',
                     }}>
                         <ArrowForwardIosIcon />
                     </Button>
