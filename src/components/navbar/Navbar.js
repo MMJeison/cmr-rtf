@@ -76,7 +76,7 @@ const Navbar = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchCategories());
-    }, []);
+    }, [dispatch]);
 
     const categories = useSelector(state => state.categories);
     let pages = categories.categories.map(category => {

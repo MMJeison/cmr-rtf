@@ -10,6 +10,7 @@ export const fetchCategories = createAsyncThunk(
     async () => {
         return await axios.get(BASE_URL_CATEGORIES, {
             headers: {
+                "Content-Type": "application/json",
                 "Access-Control-Allow-Origin": "*",
             },
         }).then((response) => {

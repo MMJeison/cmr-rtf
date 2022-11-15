@@ -16,16 +16,18 @@ import {
     InputAdornment,
     IconButton,
     FormHelperText,
+    Typography,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
+import { NavLink } from 'react-router-dom';
 
 let timer = null;
 
 const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const Login = () => {
+const Signin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -100,7 +102,7 @@ const Login = () => {
 
     return (
         <Box sx={{
-            width: {xs: "85%", sm: "60%", md: "45%", lg: "35%"},
+            width: {xs: "85%", sm: "60%", md: "45%", lg: "35%" },
             height: '500px',
             margin: "auto",
         }}>
@@ -113,7 +115,7 @@ const Login = () => {
                     <Avatar sx={{ m: 3, bgcolor: '#1bbd7e' }}>
                         <LockOutlinedIcon />
                     </Avatar>
-                    <h2>Sign In</h2>
+                    <Typography variant="h4">Sign In</Typography>
                 </Grid>
                 <Grid align="center">
                     <div style={{width: '80%', marginBottom: 20}}>
@@ -176,9 +178,14 @@ const Login = () => {
                         </Button>
                     </div>
                 </Grid>
+                <Grid align="center" sx={{marginTop: '10px'}}>
+                    <Typography>
+                        Don't have an account? <NavLink style={{ textDecoration: 'none', fontWeight: 'bold'}} to="/signup">Sign Up</NavLink>
+                    </Typography>
+                </Grid>
             </Paper>
         </Box>
     )
 }
 
-export default Login;
+export default Signin;

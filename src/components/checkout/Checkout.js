@@ -24,11 +24,11 @@ const Checkout = () => {
     const shoppingCartState = useSelector(state => state.shoppingCart);
     const oauthState = useSelector(state => state.oauth);
     const dispatch = useDispatch();
+
     useEffect(() => {
-        console.log("Checkout useEffect");
-        console.log(oauthState.user);
         dispatch(startCheckout({user: oauthState.user}));
-    }, []);
+    }, [dispatch, oauthState.user]);
+
     return (
         <div style={{ flexGrow: 1 }}>
             <CheckoutAppBar title="Checkout" />

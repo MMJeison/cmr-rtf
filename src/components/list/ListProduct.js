@@ -14,7 +14,7 @@ const ListProduct = () => {
 
     useEffect(() => {
         dispatch(fetchProducts());
-    }, []);
+    }, [dispatch]);
 
     const prodFiltred = products.products.filter((product) => {
         return (
@@ -29,8 +29,13 @@ const ListProduct = () => {
             margin: '30px auto',
         }}>
             <Grid container>
-                {products.loading ? <h1>Loading...</h1> :
-                    prodFiltred.length > 0 ? prodFiltred.map((product) => (
+                {products.loading ? (
+                <Grid item key={-1} xs={12}>
+                    <Typography variant="h3" sx={{textAlign: 'center'}}>
+                        {'Loading...'}
+                    </Typography>
+                </Grid>
+                ) : prodFiltred.length > 0 ? prodFiltred.map((product) => (
                     <Grid item key={product.id} xs={12} sm={12} md={12} lg={12}>
                         <ProductList product={product} />
                     </Grid>

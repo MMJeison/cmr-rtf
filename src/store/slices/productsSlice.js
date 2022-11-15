@@ -8,7 +8,12 @@ import { BASE_URL_PRODUCTS } from "../../assets/urls/urls";
 export const fetchProducts = createAsyncThunk(
     "products/fetchProducts",
     async () => {
-        return await axios.get(BASE_URL_PRODUCTS).then((response) => {
+        return await axios.get(BASE_URL_PRODUCTS, {
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }).then((response) => {
             return response.data;
         }).catch((error) => {
             return error;

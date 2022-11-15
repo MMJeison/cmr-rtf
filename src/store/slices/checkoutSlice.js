@@ -21,14 +21,14 @@ const checkoutSlice = createSlice({
             country: "",
         },
         isValidCustomerData: {
-            firstName: undefined,
-            lastName: undefined,
-            email: undefined,
-            address: undefined,
-            city: undefined,
-            state: undefined,
-            zip: undefined,
-            country: undefined,
+            firstName: -1,
+            lastName: -1,
+            email: -1,
+            address: -1,
+            city: -1,
+            state: -1,
+            zip: -1,
+            country: -1,
         },
         paymentData: {
             nameOnCard: "",
@@ -37,17 +37,16 @@ const checkoutSlice = createSlice({
             cardCvv: "",
         },
         isValidPaymentData: {
-            nameOnCard: undefined,
-            cardNumber: undefined,
-            cardExp: undefined,
-            cardCvv: undefined,
+            nameOnCard: -1,
+            cardNumber: -1,
+            cardExp: -1,
+            cardCvv: -1,
         },
     },
     reducers: {
         startCheckout: (state, action) => {
             if(state.isInProgress) {
-                if(state.user.id !== action.payload.user.id) {
-                    state.isInProgress = false;
+                if(state.user?.id !== action.payload.user.id) {
                     state.user = null;
                     state.step = 0;
                     state.customerData = {
@@ -61,14 +60,14 @@ const checkoutSlice = createSlice({
                         country: "",
                     };
                     state.isValidCustomerData = {
-                        firstName: undefined,
-                        lastName: undefined,
-                        email: undefined,
-                        address: undefined,
-                        city: undefined,
-                        state: undefined,
-                        zip: undefined,
-                        country: undefined,
+                        firstName: -1,
+                        lastName: -1,
+                        email: -1,
+                        address: -1,
+                        city: -1,
+                        state: -1,
+                        zip: -1,
+                        country: -1,
                     };
                     state.paymentData = {
                         nameOnCard: "",
@@ -77,15 +76,15 @@ const checkoutSlice = createSlice({
                         cardCvv: "",
                     };
                     state.isValidPaymentData = {
-                        nameOnCard: undefined,
-                        cardNumber: undefined,
-                        cardExp: undefined,
-                        cardCvv: undefined,
+                        nameOnCard: -1,
+                        cardNumber: -1,
+                        cardExp: -1,
+                        cardCvv: -1,
                     };
                 }
             }
-            state.isInProgress = true;
             state.user = action.payload.user;
+            state.isInProgress = true;
         },
         endCheckout: (state) => {
             state.isInProgress = false;
@@ -102,14 +101,14 @@ const checkoutSlice = createSlice({
                 country: "",
             };
             state.isValidCustomerData = {
-                firstName: undefined,
-                lastName: undefined,
-                email: undefined,
-                address: undefined,
-                city: undefined,
-                state: undefined,
-                zip: undefined,
-                country: undefined,
+                firstName: -1,
+                lastName: -1,
+                email: -1,
+                address: -1,
+                city: -1,
+                state: -1,
+                zip: -1,
+                country: -1,
             };
             state.paymentData = {
                 nameOnCard: "",
@@ -118,10 +117,10 @@ const checkoutSlice = createSlice({
                 cardCvv: "",
             };
             state.isValidPaymentData = {
-                nameOnCard: undefined,
-                cardNumber: undefined,
-                cardExp: undefined,
-                cardCvv: undefined,
+                nameOnCard: -1,
+                cardNumber: -1,
+                cardExp: -1,
+                cardCvv: -1,
             };
         },
         setCustomerData: (state, action) => {
@@ -130,65 +129,65 @@ const checkoutSlice = createSlice({
                     case "firstName":
                         state.customerData.firstName = action.payload.value;
                         if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.firstName = true;
+                            state.isValidCustomerData.firstName = 1;
                         }else{
-                            state.isValidCustomerData.firstName = undefined;
+                            state.isValidCustomerData.firstName = -1;
                         }
                         break;
                     case "lastName":
                         state.customerData.lastName = action.payload.value;
                         if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.lastName = true;
+                            state.isValidCustomerData.lastName = 1;
                         }else{
-                            state.isValidCustomerData.lastName = undefined;
+                            state.isValidCustomerData.lastName = -1;
                         }
                         break;
                     case "email":
                         state.customerData.email = action.payload.value;
                         if(regex.test(action.payload.value)){
-                            state.isValidCustomerData.email = true;
+                            state.isValidCustomerData.email = 1;
                         }else{
-                            state.isValidCustomerData.email = undefined;
+                            state.isValidCustomerData.email = -1;
                         }
                         break;
                     case "address":
                         state.customerData.address = action.payload.value;
                         if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.address = true;
+                            state.isValidCustomerData.address = 1;
                         }else{
-                            state.isValidCustomerData.address = undefined;
+                            state.isValidCustomerData.address = -1;
                         }
                         break;
                     case "city":
                         state.customerData.city = action.payload.value;
                         if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.city = true;
+                            state.isValidCustomerData.city = 1;
                         }else{
-                            state.isValidCustomerData.city = undefined;
+                            state.isValidCustomerData.city = -1;
                         }
                         break;
                     case "state":
                         state.customerData.state = action.payload.value;
                         if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.state = true;
+                            state.isValidCustomerData.state = 1;
                         }else{
-                            state.isValidCustomerData.state = undefined;
+                            state.isValidCustomerData.state = -1;
                         }
                         break;
                     case "zip":
                         state.customerData.zip = action.payload.value;
                         if(state.customerData.zip.length > 3){
-                            state.isValidCustomerData.zip = true;
+                            state.isValidCustomerData.zip = 1;
                         }else{
-                            state.isValidCustomerData.zip = undefined;
+                            state.isValidCustomerData.zip = -1;
                         }
                         break;
                     case "country":
                         state.customerData.country = action.payload.value;
                         if(action.payload.value.trim().length > 0){
-                            state.isValidCustomerData.country = true;
+                            state.isValidCustomerData.country = 1;
                         }else{
-                            state.isValidCustomerData.country = undefined;
+                            state.isValidCustomerData.country = -1;
                         }
                         break;
                     default:
@@ -238,14 +237,14 @@ const checkoutSlice = createSlice({
                     case "nameOnCard":
                         if(state.paymentData.nameOnCard.length === 0 &&
                             action.payload.value.trim().length === 0){
-                            state.isValidPaymentData.nameOnCard = undefined;
+                            state.isValidPaymentData.nameOnCard = -1;
                             break;
                         }
                         state.paymentData.nameOnCard = action.payload.value;
                         if(action.payload.value.length === 0){
-                            state.isValidPaymentData.nameOnCard = undefined;
+                            state.isValidPaymentData.nameOnCard = -1;
                         }else{
-                            state.isValidPaymentData.nameOnCard = true;
+                            state.isValidPaymentData.nameOnCard = 1;
                         }
                         break;
                     case "cardNumber":
@@ -255,17 +254,17 @@ const checkoutSlice = createSlice({
                         }
                         state.paymentData.cardNumber = action.payload.value;
                         if(action.payload.value.length === 16){
-                            state.isValidPaymentData.cardNumber = true;
+                            state.isValidPaymentData.cardNumber = 1;
                         }else{
-                            state.isValidPaymentData.cardNumber = undefined;
+                            state.isValidPaymentData.cardNumber = -1;
                         }
                         break;
                     case "cardExp":
                         state.paymentData.cardExp = action.payload.value;
                         if(action.payload.value.length > 0){ 
-                            state.isValidPaymentData.cardExp = true;
+                            state.isValidPaymentData.cardExp = 1;
                         }else{
-                            state.isValidPaymentData.cardExp = undefined;
+                            state.isValidPaymentData.cardExp = -1;
                         }
                         break;
                     case "cardCvv":
@@ -275,9 +274,9 @@ const checkoutSlice = createSlice({
                         }
                         state.paymentData.cardCvv = action.payload.value;
                         if(action.payload.value.length === 3){
-                            state.isValidPaymentData.cardCvv = true;
+                            state.isValidPaymentData.cardCvv = 1;
                         }else{
-                            state.isValidPaymentData.cardCvv = undefined;
+                            state.isValidPaymentData.cardCvv = -1;
                         }
                         break;
                     default:
